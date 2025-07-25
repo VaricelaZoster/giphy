@@ -13,6 +13,8 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [width, setWidth] = useState(0);
     const [upload, setUpload] = useState(false)
+    const [profile, setProfile] = useState(false)
+    const [drawer, setDrawer] = useState(false)
 
     const handleiconRotate = () => {
         setChevronUp(!chevronUp);
@@ -41,7 +43,24 @@ const Navbar = () => {
 
     const handleinnerUpload = () => {
         setUpload(!upload)
+        setProfile(false)
     }
+
+
+    const innerProfile = () => {
+        setProfile(!profile)
+        setUpload(false)
+    }
+
+    const handleDrawer = () => {
+        setDrawer(!drawer)
+        setProfile(false)
+        setUpload(false)
+    }
+
+    const categories = ["GIPHY Studios", "Gaming", "Animals", "Holidays/Greetings", "Artists", "Reactions",
+        "Emotions", "Sports", "Entertainment", "Clips"]
+
 
     return (
         <div className={` ${scrolled ? 'top-0' : ''} flex gap-6 items-center ${width < 1140 ? 'justify-between w-full' : ''} z-20`}>
@@ -112,26 +131,75 @@ const Navbar = () => {
             )}
 
             {width < 1140 && (
-                <div className='flex gap-3'>
+                <div className='flex gap-3 pr-3'>
 
-                    <div onClick={handleinnerUpload} className='flex relative h-full items-center'>
+                    <div onClick={handleinnerUpload} className='flex relative h-full items-center cursor-pointer'>
                         <PlusIcon className='h-10 text-green-500' />
 
-                            <div
-                                className={`flex flex-col transform transition-all duration-200 absolute mt-[148px] p-4 gap-5 rounded-md text-white bg-gray-800 z-20 shadow-lg
+                        <div
+                            className={`flex flex-col transform transition-all font-bold duration-200 absolute mt-[148px] p-4 pr-6 -ml-6 gap-5 rounded-md text-white bg-gray-800 z-20 shadow-lg
                                 ${upload ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0 pointer-events-none'}`}
-                            >
-                                <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Upload</a>
-                                <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Create</a>
-                            </div>
+                        >
+                            <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Upload</a>
+                            <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Create</a>
+                        </div>
 
                     </div>
 
-                    <div className='bg-violet-500 py-2 px-2 rounded-sm'>👀</div>
-                    <div className='flex text-blue-400 h-10'><Bars3BottomRightIcon /></div>
+                    <div onClick={innerProfile} className='relative bg-violet-500 py-2 px-2 rounded-sm cursor-pointer'>👀
+                        <div
+                            className={`flex flex-col transform transition-all font-bold duration-200 absolute -ml-8 mt-4 p-4 gap-5 rounded-md text-white bg-gray-800 z-20 shadow-lg
+                                ${profile ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0 pointer-events-none'}`}
+                        >
+                            <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Profile</a>
+                            <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favourites</a>
+                        </div>
+                    </div>
+                    <div className='relative'>
+                        <div
+                            onClick={handleDrawer}
+                            className='relative w-10 h-10 cursor-pointer text-blue-400 transition-all duration-300'
+                        >
+                            <Bars3BottomRightIcon
+                                className={`absolute inset-0 transition-all duration-400 ${drawer ? '-rotate-45 opacity-0' : 'opacity-100'
+                                    }`}
+                            />
+                            <PlusIcon
+                                className={`absolute inset-0 transition-all duration-400 ${drawer ? 'opacity-100 -rotate-45' : 'opacity-0 rotate-0'
+                                    }`}
+                            />
+                        </div>
+                    </div>
+
+
+                    <div
+                        className={`
+                            fixed top-0 right-0 h-screen w-screen
+                            transform transition-all duration-400 ease-out
+                            mt-15 p-6 bg-gradient-to-b from-pink-500 to-indigo-500
+                            ${drawer ? 'translate-x-0 opacity-100' : 'translate-x-full'}
+                            z-50
+                            `}
+                    >
+                        <div>
+                            <div className='text-4xl font-bold'>Categories</div>
+                            <div className='grid grid-cols-2 pt-3 text-xl font-bold text-gray-200 opacity-90 gap-2 '>
+                                {
+                                    categories.map((cat, index) => (
+                                        <div key={index} className='cursor-pointer'>
+                                            {cat}
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            )}
-        </div>
+
+
+    )
+}
+        </div >
     )
 }
 
