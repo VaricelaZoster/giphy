@@ -1,103 +1,97 @@
-import Image from "next/image";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Navbar from '../components/Navbar';
+import Input from '../components/Input';
 
-export default function Home() {
+const Page = () => {
+  const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+  const [results, setResults] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [width, setWidth] = useState(0);
+  const LIMIT = 25;
+
+  const fetchTrending = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(
+        `https://api.giphy.com/v1/gifs/trending?api_key=${API_KEY}&limit=${LIMIT}&offset=${offset}&rating=g&bundle=messaging_non_clips`
+      );
+      const json = await res.json();
+      setResults((prev) => [...prev, ...json.data]);
+      setOffset((prev) => prev + LIMIT);
+    } catch (err) {
+      console.error('Error fetching trending GIFs:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setWidth(window.innerWidth);
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    fetchTrending();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 300 &&
+        !isLoading
+      ) {
+        fetchTrending();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLoading]);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="w-screen min-h-screen bg-black flex justify-center text-white">
+      <div className="flex flex-col w-full lg:w-[66.5%] items-center gap-3 px-4">
+        <Navbar />
+        <Input />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-1 w-full space-y-1">
+          {results.map((gif) => (
+            <div
+              key={gif.id}
+              className="break-inside-avoid p-1 relative group cursor-pointer"
+            >
+              <img
+                src={gif.images.original.url}
+                alt={gif.title}
+                className="w-full rounded-lg"
+                loading="lazy"
+              />
+              <div
+                className={`absolute bottom-0 bg-gradient-to-b from-transparent to-black w-full text-sm text-white
+                ${gif.user?.display_name ? 'text-xl font-extrabold hover:underline truncate' : 'font-bold'}
+                opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-3 py-2 rounded-b-lg`}
+              >
+                {gif.user && (
+                  <img src = {gif.user?.avatar_url} className='absolute bottom-3 h-10 w-10'></img>
+                )}
+                
+                <a className={`${gif.user ? 'pl-12' : 'pl-0'} `}>{gif.user?.display_name || gif.title || 'Untitled GIF'}</a>
+              </div>
+            </div>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {isLoading && (
+          <p className="text-center text-gray-400 py-4">Loading more...</p>
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default Page;
