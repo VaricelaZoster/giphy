@@ -5,13 +5,14 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 import { Bars3BottomRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 
+
 const Navbar = () => {
 
     const router = useRouter();
 
     const [chevronUp, setChevronUp] = useState(true);
     const [scrolled, setScrolled] = useState(false);
-    const [width, setWidth] = useState(0);
+    const [width, setWidth] = useState(1920);
     const [upload, setUpload] = useState(false)
     const [profile, setProfile] = useState(false)
     const [drawer, setDrawer] = useState(false)
