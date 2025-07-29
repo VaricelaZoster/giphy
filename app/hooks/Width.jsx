@@ -4,7 +4,6 @@ const useDeviceSize = () => {
 
   const [width, setWidth] = useState(768)
   const [height, setHeight] = useState(0)
-  console.log(width)
 
   const handleWindowResize = () => {
     setWidth(window.innerWidth);

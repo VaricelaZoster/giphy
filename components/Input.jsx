@@ -57,7 +57,7 @@ const Input = () => {
         />
         <div
           onClick={handleInput}
-          className="flex justify-center items-center text-white w-20 sm:w-[10%] bg-gradient-to-tr from-pink-600 via-pink-400 to-yellow-500 rounded-r-md cursor-pointer"
+          className="flex justify-center items-center text-white w-20 sm:w-[10%] lg:w-[8%] bg-gradient-to-tr from-pink-600 via-pink-400 to-yellow-500 rounded-r-md cursor-pointer"
         >
           <MagnifyingGlassIcon className="w-14 rotate-90" />
         </div>
