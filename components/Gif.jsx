@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { GifHover } from '@/app/hooks/GifHover';
 
 const Gif = ({ info }) => {
     if (!info?.images?.fixed_height?.url) return null;
 
     const router = useRouter();
+    const [isGifPage] = GifHover();
 
     const handleGIFRoute = () => {
         const url = `/gif?id=${info.id}`;
@@ -87,7 +89,7 @@ const Gif = ({ info }) => {
     return (
         <div
             onClick={handleGIFRoute}
-            className="w-full group break-inside-avoid relative rounded-xl overflow-hidden cursor-pointer"
+            className={`w-full ${isGifPage ? '' : 'group'} break-inside-avoid relative rounded-xl overflow-hidden cursor-pointer`}
         >
             <img
                 src={info.images.fixed_height.url}
