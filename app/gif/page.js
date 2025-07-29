@@ -33,11 +33,29 @@ const Page = () => {
   if (!gif) return <div>Loading...</div>;
 
   return (
-    <div className="w-screen min-w-[297px] min-h-screen bg-black flex justify-center text-white">
-      <div className="flex flex-col w-full lg:w-[66.5%] items-center gap-3 px-2">
-        <Navbar/>
+    <div className="flex-col w-screen min-w-[297px] min-h-screen bg-black flex items-center text-white">
+      <div className="flex flex-col w-screen lg:w-[66.5%] items-center justify-center gap-3 px-2">
+        <Navbar />
         <Input/>
-        <Gif info={gif}/>
+        {console.log(gif)}
+        <div className='flex w-full h-32 items-start'>
+          <div className='flex-1 h-40 w-full'>
+            {gif.user && (
+              <div className='flex gap-4 bg-gradient-to-b from-neutral-800 from-10% to-neutral-950 h-full mt-3.5 rounded-xl p-3'>
+                <img className='h-14' src = {gif.user.avatar_url}/>
+                <div className='flex flex-col w-full'>
+                  <div className='text-xl w-34 font-bold truncate whitespace-nowrap overflow-hidden'>{gif.user.display_name}</div>
+                  <div className='text-sm font-bold text-neutral-400 cursor-pointer hover:text-white'>@{gif.user.username}</div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className='flex-[2] h-full scale-80 flex items-start justify-center'>
+            <Gif info={gif} />
+          </div>
+          <div className='flex-1'>tools</div>
+        </div>
+
       </div>
     </div>
   );
