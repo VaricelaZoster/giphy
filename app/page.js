@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Input from '../components/Input';
 import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import Gif from '../components/Gif';
 
 const Page = () => {
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
@@ -56,78 +57,18 @@ const Page = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isLoading]);
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(id)) updated.delete(id);
-      else updated.add(id);
-      return updated;
-    });
-  };
-
   console.log(favorites)
 
-  const linkCopy = (url) => {
-   
-  };
+ 
 
   return (
     <div className="w-screen min-h-screen bg-black flex justify-center text-white">
       <div className="flex flex-col w-full lg:w-[66.5%] items-center gap-3 px-4">
         <Navbar />
         <Input />
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-1 w-full space-y-1">
+        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-2 space-y-2 w-full">
           {results.map((gif,index) => (
-            <div
-              key={index}
-              className="break-inside-avoid p-1 relative group cursor-pointer"
-            >
-              <img
-                src={gif.images.original.url}
-                alt={gif.title}
-                className="w-full rounded-lg"
-                loading="lazy"
-              />
-
-              {/* Hover Buttons */}
-              <div className="absolute opacity-0 group-hover:opacity-100 flex top-2 right-4">
-                <div className="flex bg-[rgba(0,0,0,0.4)] space-x-2 rounded p-1">
-                  <div
-                    onClick={() => toggleFavorite(gif.id)}
-                    className="transition-transform duration-200 hover:scale-110"
-                  >
-                    <HeartIcon
-                      className={`h-6 w-6 ${favorites.has(gif.id) ? 'text-red-500' : 'text-white'}`}
-                    />
-                  </div>
-                  <div
-                    onClick={() => linkCopy(gif.url)}
-                    className="transition-transform duration-200 hover:scale-110"
-                  >
-                    <LinkIcon className="h-6 w-6 text-white" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Title / Display Name */}
-              <div
-                className={`absolute bottom-0 bg-gradient-to-b from-transparent to-black w-full text-sm text-white
-                ${gif.user?.display_name ? 'text-xl font-extrabold hover:underline truncate' : 'font-bold'}
-                opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-3 py-2 rounded-b-lg`}
-              >
-                {gif.user && (
-                  <img
-                    src={gif.user?.avatar_url}
-                    className="absolute bottom-3 h-10 w-10 rounded-full"
-                    alt="avatar"
-                  />
-                )}
-
-                <a className={`${gif.user ? 'pl-12' : 'pl-0'} truncate whitespace-nowrap block`}>
-                  {gif.user?.display_name || gif.title || 'Untitled GIF'}
-                </a>
-              </div>
-            </div>
+            <Gif className = '' key = {index} info={gif}/>
           ))}
         </div>
 
