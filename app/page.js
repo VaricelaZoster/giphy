@@ -1,18 +1,18 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Input from '../components/Input';
 import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import Gif from '../components/Gif';
+import useDeviceSize from '@/app/hooks/Width';
 
 const Page = () => {
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
   const [results, setResults] = useState([]);
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [width, setWidth] = useState(0);
-  const [favorites, setFavorites] = useState(new Set());
+  const [width, height] = useDeviceSize()
   const LIMIT = 25;
 
   const fetchTrending = async () => {
@@ -31,12 +31,6 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    setWidth(window.innerWidth);
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     fetchTrending();
@@ -57,8 +51,6 @@ const Page = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isLoading]);
 
-  console.log(favorites)
-
  
 
   return (
@@ -66,7 +58,7 @@ const Page = () => {
       <div className="flex flex-col w-full lg:w-[66.5%] items-center gap-3 px-4">
         <Navbar />
         <Input />
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-2 space-y-2 w-full">
+        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-2 overflow-visible space-y-2 w-full">
           {results.map((gif,index) => (
             <Gif className = '' key = {index} info={gif}/>
           ))}

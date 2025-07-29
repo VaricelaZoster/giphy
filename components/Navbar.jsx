@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 import { Bars3BottomRightIcon, PlusIcon } from '@heroicons/react/24/outline';
+import useDeviceSize from '../app/hooks/Width';
 
 
 const Navbar = () => {
@@ -12,7 +13,7 @@ const Navbar = () => {
 
     const [chevronUp, setChevronUp] = useState(true);
     const [scrolled, setScrolled] = useState(false);
-    const [width, setWidth] = useState(1920);
+    const [width, setWidth] = useDeviceSize()
     const [upload, setUpload] = useState(false)
     const [profile, setProfile] = useState(false)
     const [drawer, setDrawer] = useState(false)
@@ -20,18 +21,6 @@ const Navbar = () => {
     const handleiconRotate = () => {
         setChevronUp(!chevronUp);
     }
-
-    useEffect(() => {
-        const handleResize = () => {
-            setWidth(window.innerWidth);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
 
     /*useEffect(() => {
         const handleScroll = () => {
@@ -64,7 +53,7 @@ const Navbar = () => {
 
 
     return (
-        <div className={` ${scrolled ? 'top-0' : ''} flex gap-6 items-center ${width < 1140 ? 'justify-between w-full' : ''} z-20`}>
+        <div className={` ${scrolled ? 'top-0' : ''} flex gap-6 items-center ${width < 1140 ? 'justify-between w-full' : ''} z-20 `}>
             <div onClick={() => router.push('/')} className={`flex transition-all duration-200 ease-linear ${scrolled ? 'sticky translate-y-5.5' : '-translate-y-0'} text-white text-5xl font-extrabold cursor-pointer`}>GIPHY</div>
             {
                 width >= 1140 && (

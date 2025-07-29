@@ -40,7 +40,7 @@ const Input = () => {
 
   return (
     <div
-      className={`sticky top-0 z-10 bg-black w-full py-2 pr-0 transition-all duration-300 `}
+      className={`flex sticky top-0 z-10 w-full py-2 transition-all duration-300`}
     >
       <div className="flex w-full">
         {/*scrolled && (
