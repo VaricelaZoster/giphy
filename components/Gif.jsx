@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
+import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
+import Link from 'next/link';
 
 const Gif = ({ info }) => {
     if (!info?.images?.fixed_height?.url) return null;
 
 
-
+    console.log(info);
     return (
-        <div className="w-full break-inside-avoid relative rounded-xl overflow-hidden ">
+        <div className="w-full group break-inside-avoid relative rounded-xl overflow-hidden ">
             <img
                 src={info.images.fixed_height.url}
                 alt={info.title || 'GIF'}
                 className="w-full object-cover "
                 loading="lazy"
             ></img>
-            <div className="flex w-full absolute bottom-0 h-full opacity-0 hover:opacity-100 bg-gradient-to-b from-transparent from-60% to-black items-end p-2 text-white transition-opacity duration-300">
+            <div className="flex w-full absolute bottom-0 h-full opacity-0 group-hover:opacity-100 bg-gradient-to-b from-transparent from-60% to-black items-end p-2 text-white transition-opacity duration-300">
                 {info.user && (
                     <img
                     src={info.user?.avatar_url}
@@ -23,7 +25,10 @@ const Gif = ({ info }) => {
                 )}
                 <a className={`${info.user ? 'pl-12 font-extrabold' : 'pl-0 font-bold'} truncate pb-2.5 whitespace-nowrap block`}>{info.user?.display_name || info.title || 'Untitled GIF'}</a>
             </div>
-
+            <div className='flex opacity-0 group-hover:opacity-100 p-1 gap-2 absolute top-1.5 right-3 bg-black/60 rounded transition-opacity duration-300'>
+                <div className='transition transform-all hover:scale-120'><HeartIcon className='w-5'/></div>
+                <div className='transition transform-all hover:scale-120'><LinkIcon className='w-5'/></div>
+            </div>
         </div>
     );
 };

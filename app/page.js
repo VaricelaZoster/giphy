@@ -2,8 +2,6 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Input from '../components/Input';
-import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
-import Link from 'next/link';
 import Gif from '../components/Gif';
 import useDeviceSize from '@/app/hooks/Width';
 
@@ -12,7 +10,6 @@ const Page = () => {
   const [results, setResults] = useState([]);
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [width, height] = useDeviceSize()
   const LIMIT = 25;
 
   const fetchTrending = async () => {
@@ -54,8 +51,8 @@ const Page = () => {
  
 
   return (
-    <div className="w-screen min-h-screen bg-black flex justify-center text-white">
-      <div className="flex flex-col w-full lg:w-[66.5%] items-center gap-3 px-4">
+    <div className="w-screen min-w-[297px] min-h-screen bg-black flex justify-center text-white">
+      <div className="flex flex-col w-full lg:w-[66.5%] items-center gap-3 px-2">
         <Navbar />
         <Input />
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-2 overflow-visible space-y-2 w-full">

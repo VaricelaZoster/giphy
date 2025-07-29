@@ -40,7 +40,7 @@ const Input = () => {
 
   return (
     <div
-      className={`flex sticky top-0 z-10 w-full py-2 transition-all duration-300`}
+      className={`flex sticky top-0 z-10 w-full py-2 px-0.5 bg-black transition-all duration-300`}
     >
       <div className="flex w-full">
         {/*scrolled && (
@@ -57,7 +57,7 @@ const Input = () => {
         />
         <div
           onClick={handleInput}
-          className="flex justify-center items-center text-white w-[8%] bg-gradient-to-tr from-pink-600 via-pink-400 to-yellow-500 rounded-r-md cursor-pointer"
+          className="flex justify-center items-center text-white w-20 sm:w-[10%] bg-gradient-to-tr from-pink-600 via-pink-400 to-yellow-500 rounded-r-md cursor-pointer"
         >
           <MagnifyingGlassIcon className="w-14 rotate-90" />
         </div>
