@@ -1,7 +1,7 @@
 'use client';
 import Navbar from '@/components/Navbar';
 import Input from '@/components/Input';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState, useCallback } from 'react';
 import Gif from '@/components/Gif';
 import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
@@ -10,10 +10,12 @@ const Page = () => {
   const searchParams = useSearchParams();
   const [gif, setGif] = useState(null);
   const [fav, setFav] = useState(false);
+  const [channel, setChannel] = useState(null);
 
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
-  // Fetch GIF based on ID from URL
+  //const router = useRouter()
+
   useEffect(() => {
     const id = searchParams.get('id');
     if (!id) return;
@@ -33,7 +35,20 @@ const Page = () => {
     fetchGIF();
   }, [searchParams, API_KEY]);
 
-  // Check if GIF is already in favorites
+  useEffect(() => {
+    const fetchChannel = async () => {
+      try {
+        const res = await fetch(
+          `https://api.giphy.com/v1/channels/search?api_key=${API_KEY}&q=${gif.username}&limit=1&offset=0`
+        )
+        const json = await res.json();
+        setChannel(json.data[0].user.description);
+        console.log(channel)
+      } catch (err) { }
+    }
+    fetchChannel()
+  })
+
   useEffect(() => {
     if (!gif) return;
 
@@ -59,7 +74,6 @@ const Page = () => {
     checkFav();
   }, [gif]);
 
-  // Toggle favorite
   const handleAddFav = useCallback(async () => {
     if (fav == false) {
       try {
@@ -120,17 +134,21 @@ const Page = () => {
         <div className='flex w-full h-32 items-start'>
           <div className='flex-1 h-40 w-full'>
             {gif.user && (
-              <div className='flex gap-4 w-65 bg-gradient-to-b from-neutral-800 from-10% to-neutral-950 h-full mt-3.5 rounded-xl p-3'>
-                <img className='h-14 rounded-full' src={gif.user.avatar_url} alt="User Avatar" />
+              <div className='flex flex-col gap-4 w-65 bg-gradient-to-b from-neutral-800 from-10% to-neutral-950 h-full mt-3.5 rounded-xl p-3'>
+                <div className='flex gap-3'>
+                  <img className='h-14 rounded-full' src={gif.user.avatar_url} alt="User Avatar" />
                 <div className='flex flex-col w-full'>
                   <div className='text-xl font-bold truncate whitespace-nowrap overflow-hidden max-w-[10rem]'>
                     {gif.user.display_name}
                   </div>
 
-                  <div className='text-sm font-bold text-neutral-400 cursor-pointer hover:text-white'>
+                  <div
+                    className='text-sm font-bold text-neutral-400 cursor-pointer hover:text-white'>
                     @{gif.user.username}
                   </div>
                 </div>
+                </div>
+                <div className='flex'>{channel}</div>
               </div>
             )}
           </div>

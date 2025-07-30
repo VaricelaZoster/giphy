@@ -88,7 +88,7 @@ const Gif = ({ info }) => {
 
     const handleLinkCopy = () => {
         const id = info.id
-        const url = `${window.location.origin}/gif?id=${id}`
+        const url = `${window.location.origin}/gif?id=${info.id}`
         navigator.clipboard.writeText(url);
     }
 
@@ -135,7 +135,7 @@ const Gif = ({ info }) => {
                     onClick={
                         (e) => {
                         e.stopPropagation()
-                        handleLinkCopy}
+                        handleLinkCopy()}
                     }
                     className="transition transform-all hover:scale-120"
                 >
