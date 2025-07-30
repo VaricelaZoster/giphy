@@ -86,6 +86,12 @@ const Gif = ({ info }) => {
         }
     };
 
+    const handleLinkCopy = () => {
+        const id = info.id
+        const url = `${window.location.origin}/gif?id=${id}`
+        navigator.clipboard.writeText(url);
+    }
+
     return (
         <div
             onClick={handleGIFRoute}
@@ -126,11 +132,11 @@ const Gif = ({ info }) => {
                 </div>
 
                 <div
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(info.url);
-                        console.log('Copied link:', info.url);
-                    }}
+                    onClick={
+                        (e) => {
+                        e.stopPropagation()
+                        handleLinkCopy}
+                    }
                     className="transition transform-all hover:scale-120"
                 >
                     <LinkIcon className="w-5" />
