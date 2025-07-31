@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 import { Bars3BottomRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import useDeviceSize from '../app/hooks/Width';
@@ -92,6 +92,12 @@ const Navbar = () => {
                             </div>
                             <div className="h-1 w-full bg-gradient-to-r from-pink-500 to-rose-500  "></div>
                         </li>
+                        <li className='group flex flex-col items-center justify-center cursor-pointer'>
+                            <div className='py-0.5 transition duration-400 group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:to-rose-500'>
+                                <span><EllipsisVerticalIcon className='w-8'/></span>
+                            </div>
+                            <div className='h-1 w-full bg-gradient-to-r from-red-500 to-red-700'></div>
+                        </li>
                     </ul>
                 )
             }
@@ -106,7 +112,7 @@ const Navbar = () => {
                 )
             }
             {width >= 1140 && (
-                <div onClick={handleiconRotate} className={`flex relative text-white items-center rounded-sm ${width > 1140 ? 'w-42' : ''} bg-gray-700 mr-3 gap-2 ${scrolled ? '-translate-y-14' : 'translate-y-0'}`}>
+                <div onClick={handleiconRotate} className={`flex relative text-white items-center rounded-sm cursor-pointer ${width > 1140 ? 'w-42' : ''} bg-gray-700 mr-3 gap-2 ${scrolled ? '-translate-y-14' : 'translate-y-0'}`}>
                     <div className='bg-violet-500 py-2 px-2 rounded-sm'>👀</div>
                     <div className='flex items-center gap-1 font-bold '>GIPHY User <ChevronDownIcon className={`h-6 w-5 animate duration-200 ${chevronUp ? 'rotate-0' : 'rotate-180'}`} /></div>
 

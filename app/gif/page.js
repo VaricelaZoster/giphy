@@ -1,7 +1,7 @@
 'use client';
 import Navbar from '@/components/Navbar';
 import Input from '@/components/Input';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState, useCallback } from 'react';
 import Gif from '@/components/Gif';
 import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
@@ -11,10 +11,9 @@ const Page = () => {
   const [gif, setGif] = useState(null);
   const [fav, setFav] = useState(false);
   const [channel, setChannel] = useState(null);
+  const [readmore, setReadmore] = useState(false);
 
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-
-  //const router = useRouter()
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -36,18 +35,22 @@ const Page = () => {
   }, [searchParams, API_KEY]);
 
   useEffect(() => {
+    if (!gif?.username) return;
+
     const fetchChannel = async () => {
       try {
         const res = await fetch(
           `https://api.giphy.com/v1/channels/search?api_key=${API_KEY}&q=${gif.username}&limit=1&offset=0`
-        )
+        );
         const json = await res.json();
-        setChannel(json.data[0].user.description);
-        console.log(channel)
-      } catch (err) { }
-    }
-    fetchChannel()
-  })
+        setChannel(json.data[0]?.user?.description || '');
+      } catch (err) {
+        console.error('Error fetching channel:', err);
+      }
+    };
+
+    fetchChannel();
+  }, [gif, API_KEY]);
 
   useEffect(() => {
     if (!gif) return;
@@ -86,6 +89,7 @@ const Page = () => {
         });
 
         const data = await res.json();
+        console.log('Added to favorites:', data);
         if (data.success) {
           setFav(true);
           console.log('Added to favorites:', data.result);
@@ -107,10 +111,12 @@ const Page = () => {
         });
 
         const data = await res.json();
-        if (data.success) {
+        console.log('Deleted document:', data);
+        if (data.result.acknowledged) {
+           setFav(false);
+           console.log('Removed from favorites:', data.result);
         } else {
-          setFav(false);
-          console.log('Removed from favorites:', data.result);
+         console.error('Failed to remove from favorites');
         }
       } catch (err) {
         console.error('🚨 Error adding favorite:', err);
@@ -121,7 +127,11 @@ const Page = () => {
   const handleLinkCopy = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
-  }
+  };
+
+  const handleReadMore = () => {
+    setReadmore(!readmore);
+  };
 
   if (!gif) return <div className="text-white p-8">Loading...</div>;
 
@@ -131,46 +141,57 @@ const Page = () => {
         <Navbar />
         <Input />
 
-        <div className='flex w-full h-32 items-start'>
-          <div className='flex-1 h-40 w-full'>
+        <div className="flex w-full min-h-32 items-start">
+          <div className="flex-1 w-full">
             {gif.user && (
-              <div className='flex flex-col gap-4 w-65 bg-gradient-to-b from-neutral-800 from-10% to-neutral-950 h-full mt-3.5 rounded-xl p-3'>
-                <div className='flex gap-3'>
-                  <img className='h-14 rounded-full' src={gif.user.avatar_url} alt="User Avatar" />
-                <div className='flex flex-col w-full'>
-                  <div className='text-xl font-bold truncate whitespace-nowrap overflow-hidden max-w-[10rem]'>
-                    {gif.user.display_name}
+              <div className="flex flex-col gap-4 w-65 bg-gradient-to-b from-neutral-800 from-10% to-neutral-950 mt-3.5 rounded-xl p-3">
+                <div className="flex gap-3">
+                  <img className="h-14 rounded-full" src={gif.user.avatar_url} alt="User Avatar" />
+                  <div className="flex flex-col w-full">
+                    <div className="text-xl font-bold truncate whitespace-nowrap overflow-hidden max-w-[10rem]">
+                      {gif.user.display_name}
+                    </div>
+                    <div className="text-sm font-bold text-neutral-400 cursor-pointer hover:text-white">
+                      @{gif.user.username}
+                    </div>
                   </div>
+                </div>
 
-                  <div
-                    className='text-sm font-bold text-neutral-400 cursor-pointer hover:text-white'>
-                    @{gif.user.username}
-                  </div>
-                </div>
-                </div>
-                <div className='flex'>{channel}</div>
+                {channel && (
+                  <>
+                    <div className={`transition-all transform ${readmore ? '' : 'line-clamp-3'} text-sm text-neutral-300`}>
+                      {channel}
+                    </div>
+                    <div
+                      onClick={handleReadMore}
+                      className="mt-1 cursor-pointer w-fit"
+                    >
+                      {readmore ? 'Read less' : 'Read more'}
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
 
-          <div className='flex-[2] h-full scale-80 flex items-start justify-center'>
+          <div className="flex-[2] scale-90 flex items-start justify-center">
             <Gif info={gif} />
           </div>
 
-          <div className='flex-1 space-y-8 mt-4'>
+          <div className="flex-1 space-y-8 mt-4">
             <div
               onClick={handleAddFav}
               className={`flex gap-3 group items-center text-xl ${fav ? 'text-red-500' : ''} text-neutral-400 font-bold cursor-pointer hover:text-red-500`}
             >
-              <HeartIcon className='w-5.5 transition group-hover:scale-150' />
+              <HeartIcon className="w-5.5 transition group-hover:scale-150" />
               Favourite
             </div>
 
             <div
               onClick={handleLinkCopy}
-              className='flex gap-3 group items-center text-xl text-neutral-400 font-bold cursor-pointer hover:text-blue-500'
+              className="flex gap-3 group items-center text-xl text-neutral-400 font-bold cursor-pointer hover:text-blue-500"
             >
-              <LinkIcon className='w-5.5 transition group-hover:scale-150' />
+              <LinkIcon className="w-5.5 transition group-hover:scale-150" />
               Copy Link
             </div>
           </div>
