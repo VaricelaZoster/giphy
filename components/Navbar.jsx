@@ -5,9 +5,10 @@ import { ChevronDownIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outli
 import { useState, useEffect } from 'react';
 import { Bars3BottomRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import useDeviceSize from '../app/hooks/Width';
+import { signIn, signOut } from 'next-auth/react';
 
 
-const Navbar = () => {
+const Navbar = ({ session }) => {
 
     const router = useRouter();
 
@@ -52,6 +53,7 @@ const Navbar = () => {
         "Emotions", "Sports", "Entertainment", "Clips"]
 
 
+
     return (
         <div className={` ${scrolled ? 'top-0' : ''} flex gap-6 items-center ${width < 1140 ? 'justify-between w-full' : ''} z-20 `}>
             <div onClick={() => router.push('/')} className={`flex transition-all duration-200 ease-linear ${scrolled ? 'sticky translate-y-5.5' : '-translate-y-0'} text-white text-5xl font-extrabold cursor-pointer`}>GIPHY</div>
@@ -92,12 +94,34 @@ const Navbar = () => {
                             </div>
                             <div className="h-1 w-full bg-gradient-to-r from-pink-500 to-rose-500  "></div>
                         </li>
-                        <li className='group flex flex-col items-center justify-center cursor-pointer'>
-                            <div className='py-0.5 transition duration-400 group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:to-rose-500'>
-                                <span><EllipsisVerticalIcon className='w-8'/></span>
+                        <li onClick={handleDrawer} className='group flex flex-col items-center justify-center cursor-pointer'>
+                            <div className='py-0.5 transition duration-400 group-hover:bg-gradient-to-r group-hover:from-rose-500 group-hover:to-rose-700'>
+                                <span><EllipsisVerticalIcon className='w-8' /></span>
                             </div>
                             <div className='h-1 w-full bg-gradient-to-r from-red-500 to-red-700'></div>
                         </li>
+                        <div
+                            className={`
+                            fixed -bottom-[120%] right-0 h-screen w-screen
+                            transform transition-all duration-300 ease-in-out
+                            mt-15 p-6 -z-10 bg-gradient-to-b from-pink-500 to-indigo-500
+                            ${!drawer ? 'translate-y-0 opacity-0' : '-translate-y-212 opacity-100'}
+                            z-50
+                            `}
+                        >
+                            <div>
+                                <div className='text-4xl font-bold'>Categories</div>
+                                <div className='grid grid-cols-2 pt-3 text-xl font-bold text-gray-200 opacity-90 gap-2 '>
+                                    {
+                                        categories.map((cat, index) => (
+                                            <div key={index} className='cursor-pointer'>
+                                                {cat}
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </ul>
                 )
             }
@@ -112,16 +136,33 @@ const Navbar = () => {
                 )
             }
             {width >= 1140 && (
-                <div onClick={handleiconRotate} className={`flex relative text-white items-center rounded-sm cursor-pointer ${width > 1140 ? 'w-42' : ''} bg-gray-700 mr-3 gap-2 ${scrolled ? '-translate-y-14' : 'translate-y-0'}`}>
+                <div onClick={
+                    handleiconRotate
+                } className={`flex relative text-white items-center rounded-sm cursor-pointer whitespace-nowrap pr-1 ${width > 1140 ? 'w-full' : ''} bg-gray-700 mr-3 gap-2 ${scrolled ? '-translate-y-14' : 'translate-y-0'}`}>
                     <div className='bg-violet-500 py-2 px-2 rounded-sm'>👀</div>
-                    <div className='flex items-center gap-1 font-bold '>GIPHY User <ChevronDownIcon className={`h-6 w-5 animate duration-200 ${chevronUp ? 'rotate-0' : 'rotate-180'}`} /></div>
+                    <div className={`flex items-center gap-1 font-bold `}>{session ? session.user.name : 'Sign In'}<ChevronDownIcon className={`h-6 w-5 animate duration-200 ${chevronUp ? 'rotate-0' : 'rotate-180'}`} /></div>
 
-                    <div className={`flex flex-col absolute font-bold mt-43 space-y-1.5 bg-gray-800 w-full text-white py-5 px-2 rounded-md z-20 transition-all transform duration-200 ease-in-out 
+
+                    <div className={`flex flex-col absolute font-bold ${session ? 'mt-50':'mt-22'} space-y-1.5 bg-gray-800 w-full text-white ${session ? 'py-5':'py-3'} px-2 rounded-md z-20 transition-all transform duration-200 ease-in-out 
                         ${chevronUp ? '-translate-y-2 opacity-0 -z-10 pointer-events-none' : 'translate-y-1'}`}>
-                        <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Profile</a>
-                        <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Join</a>
-                        <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favoutites</a>
+                        {session && (
+                            <>
+                                <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Profile</a>
+                                <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Join</a>
+                                <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favoutites</a>
+                            </>
+                        )}
+                        <a onClick={() => {
+                            if (!session) {
+                                signIn("github")
+                            }
+                            else {
+                                signOut()
+                            }
+                        }} className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>{session ? 'Log Out' : 'Sign In'}</a>
                     </div>
+
+
 
                 </div>
             )}
@@ -142,13 +183,28 @@ const Navbar = () => {
 
                     </div>
 
-                    <div onClick={innerProfile} className='relative bg-violet-500 py-2 px-2 rounded-sm cursor-pointer'>👀
+                    <div onClick={
+                        innerProfile
+                    } className='relative bg-violet-500 py-2 px-2 rounded-sm cursor-pointer'>👀
                         <div
-                            className={`flex flex-col transform transition-all font-bold duration-200 absolute -ml-8 mt-4 p-4 gap-5 rounded-md text-white bg-gray-800 z-20 shadow-lg
+                            className={`flex flex-col transform whitespace-nowrap transition-all font-bold duration-200 absolute -ml-8 mt-4 p-4 gap-5 rounded-md text-white bg-gray-800 z-20 shadow-lg
                                 ${profile ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0 pointer-events-none'}`}
                         >
-                            <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Profile</a>
-                            <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favourites</a>
+                            {session && (
+                                <>
+                                    <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Profile</a>
+                                    <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favourites</a>
+                                </>
+                            )}
+                            <a
+                                onClick={() => {
+                                    if (!session) {
+                                        signIn("github")
+                                    } else {
+                                        signOut()
+                                    }
+                                }}
+                                className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>{session ? 'Log Out' : 'Sign In'}</a>
                         </div>
                     </div>
                     <div className='relative'>

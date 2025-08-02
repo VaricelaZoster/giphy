@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState, useCallback } from 'react';
 import Gif from '@/components/Gif';
 import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
+import { useSession } from 'next-auth/react';
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -13,6 +14,7 @@ const Page = () => {
   const [channel, setChannel] = useState(null);
   const [readmore, setReadmore] = useState(false);
 
+  const {data: session} = useSession();
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
   useEffect(() => {
@@ -138,7 +140,7 @@ const Page = () => {
   return (
     <div className="flex-col w-screen min-w-[297px] min-h-screen bg-black flex items-center text-white">
       <div className="flex flex-col w-screen lg:w-[66.5%] items-center justify-center gap-3 px-2">
-        <Navbar />
+        <Navbar session={session}/>
         <Input />
 
         <div className="flex w-full min-h-32 items-start">

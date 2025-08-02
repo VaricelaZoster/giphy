@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
 
 const Input = () => {
   const placeholders = ['Search all the GIFs and Stickers', '@username to search channels'];
@@ -8,16 +9,26 @@ const Input = () => {
   const [inputValue, setInputValue] = useState('');
   const [scrolled, setScrolled] = useState(false);
 
+  const router = useRouter();
+
   const handleChange = (e) => {
     setInputValue(e.target.value);
   };
 
   const handleInput = () => {
     console.log(inputValue);
+    if(inputValue.trim()){
+      router.push(`/search?q=${inputValue}`);
+      setInputValue(inputValue)
+    }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
+       if(inputValue.trim()){
+      router.push(`/search?q=${inputValue}`);
+      setInputValue(inputValue)
+    }
       console.log(inputValue);
     }
   };
