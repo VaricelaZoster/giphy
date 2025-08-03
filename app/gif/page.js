@@ -148,7 +148,7 @@ const Page = () => {
         <Navbar session={session}/>
         <Input />
 
-        <div className="flex w-full min-h-32 items-start">
+        <div className="flex flex-col sm:flex-row w-full min-h-32 items-center sm:items-start">
           <div className="flex-1 w-full">
             {gif.user && (
               <div className="flex flex-col gap-4 w-65 bg-gradient-to-b from-neutral-800 from-10% to-neutral-950 mt-3.5 rounded-xl p-3">
