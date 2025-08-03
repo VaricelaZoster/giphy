@@ -59,12 +59,13 @@ const Page = () => {
 
     const checkFav = async () => {
       try {
+        const gif1 = {...gif, db: session?.user?.name || 'GIPHY'};
         const res = await fetch('/api/find', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(gif),
+          body: JSON.stringify(gif1),
         });
 
         const data = await res.json();
@@ -82,12 +83,13 @@ const Page = () => {
   const handleAddFav = useCallback(async () => {
     if (fav == false) {
       try {
+        const gif1 = {...gif, db: session?.user?.name || 'GIPHY'};
         const res = await fetch('/api/add', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(gif),
+          body: JSON.stringify(gif1),
         });
 
         const data = await res.json();
@@ -104,12 +106,13 @@ const Page = () => {
     }
     else {
       try {
+        const gif1 = {...gif, db: session?.user?.name || 'GIPHY'};
         const res = await fetch('/api/delete', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(gif),
+          body: JSON.stringify(gif1),
         });
 
         const data = await res.json();

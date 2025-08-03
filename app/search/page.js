@@ -4,8 +4,10 @@ import Navbar from '@/components/Navbar';
 import Input from '@/components/Input';
 import Gif from '@/components/Gif';
 import { useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 const Page = () => {
+  const { data: session } = useSession();
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
   const LIMIT = 25;
 
@@ -73,7 +75,7 @@ const Page = () => {
   return (
     <div className="w-screen min-w-[297px] min-h-screen bg-black flex justify-center text-white">
       <div className="flex flex-col w-full lg:w-[66.5%] items-center gap-3 px-2">
-        <Navbar />
+        <Navbar session = {session}/>
         <Input />
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-2 overflow-visible space-y-2 w-full">
           {results.map((gif,index) => (

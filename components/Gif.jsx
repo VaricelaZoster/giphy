@@ -4,6 +4,7 @@ import { HeartIcon, LinkIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { GifHover } from '@/app/hooks/GifHover';
+import { useSession } from 'next-auth/react';
 
 const Gif = ({ info }) => {
     if (!info?.images?.fixed_height?.url) return null;
@@ -17,17 +18,20 @@ const Gif = ({ info }) => {
         router.push(url);
     };
 
+    const {data: session} = useSession();
+
     const [fav, setFav] = useState(false)
 
     useEffect(() => {
         const checkFav = async () => {
             try {
+                const info1 = {...info, db: session?.user?.name || 'GIPHY'};
                 const res = await fetch('/api/find', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(info),
+                    body: JSON.stringify(info1),
                 });
 
                 const data = await res.json();
@@ -45,12 +49,13 @@ const Gif = ({ info }) => {
     const handleFav = async (gif) => {
         if (fav == false) {
             try {
+                const gif1 = {...gif,db : session?.user?.name || 'GIPHY'};
                 const res = await fetch('/api/add', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(gif),
+                    body: JSON.stringify(gif1),
                 });
 
                 const data = await res.json();
@@ -61,17 +66,18 @@ const Gif = ({ info }) => {
                     console.error('Failed to add to favorites');
                 }
             } catch (err) {
-                console.error('🚨 Error adding favorite:', err);
+                console.error('Error adding favorite:', err);
             }
         }
         else{
              try {
+                const gif1 = {...gif,db : session?.user?.name || 'GIPHY'};
                 const res = await fetch('/api/delete', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(gif),
+                    body: JSON.stringify(gif1),
                 });
 
                 const data = await res.json();

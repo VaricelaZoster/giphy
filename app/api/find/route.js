@@ -4,7 +4,7 @@ export async function POST(request) {
   const body = await request.json();
 
   const client = await clientPromise;
-  const db = client.db('GIPHY');
+  const db = client.db(body.db || 'GIPHY');
   const collection = db.collection('fav');
 
   const result = await collection.findOne({ id: body.id });
