@@ -149,12 +149,12 @@ const Navbar = ({ session }) => {
                             <>
                                 <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Profile</a>
                                 <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Join</a>
-                                <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favoutites</a>
+                                <a onClick={() => router.push('/favourites')} className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favourites</a>
                             </>
                         )}
                         <a onClick={() => {
                             if (!session) {
-                                signIn("github")
+                                signIn()
                             }
                             else {
                                 signOut()
@@ -193,13 +193,13 @@ const Navbar = ({ session }) => {
                             {session && (
                                 <>
                                     <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Profile</a>
-                                    <a className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favourites</a>
+                                    <a onClick={() => router.push('/favourites')} className='cursor-pointer transition duration-100 ease-in hover:text-gray-300'>Favourites</a>
                                 </>
                             )}
                             <a
                                 onClick={() => {
                                     if (!session) {
-                                        signIn("github")
+                                        signIn()
                                     } else {
                                         signOut()
                                     }
