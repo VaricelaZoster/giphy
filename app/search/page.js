@@ -1,4 +1,6 @@
 'use client';
+export const dynamic = 'force-dynamic';
+
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Input from '@/components/Input';
